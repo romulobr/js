@@ -5,9 +5,10 @@ core.log= function(msg) {
 }
 
 core.WorldObject = function(){
-	function self() {
+	function self() {		
 		this.lastUpdate = 0;
 		this.actions = [];
+		this.characteristics = [];
 	};
 	//do stuff with prototype here.
 	self.prototype.run = function(obj,elapsedTime) {
@@ -20,9 +21,21 @@ core.WorldObject = function(){
 			;});
 			this.lastUpdate = this.lastUpdate+elapsedTime;
 	};
+
 	self.prototype.update = function(now){
 		var elapsedTime = now - this.lastUpdate;
 		this.run(this,elapsedTime);
 	}	
+
+	self.prototype.hasCharacteristic = function(characteristic){
+		return _.contains(_.keys(this.characteristics),characteristic);
+	}
+
+	self.prototype.addCharacteristicProperties = function(characteristic, properties){
+		if(!this.hasCharacteristic(characteristic) ){
+			this.characteristics[characteristic]=_.clone(properties);
+		}
+	}
+	
 	return new self();
 }

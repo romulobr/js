@@ -1,6 +1,6 @@
 describe("Core", function() {
 
-  it("Time of last update should be updated", function() {
+  it("Time of last update on a world object is correcly updated", function() {
 	var o = new core.WorldObject();
 	o.actions.push(function(obj,elapsedTime){});
     expect(o.lastUpdate).toEqual(0);
@@ -10,7 +10,7 @@ describe("Core", function() {
     expect(o.lastUpdate).toEqual(400);	
   });
 
-  it("Action function should be called with proper arguments", function() {
+  it("Action function is called on root object with proper arguments", function() {
 	var o = new core.WorldObject();
 	o.actions.push(function(obj,elapsedTime){});
 	spyOn(o,'run');
@@ -18,7 +18,7 @@ describe("Core", function() {
 	expect(o.run).toHaveBeenCalledWith(o,100);
   });
 
-  it("Action function should be called on deeper objects with right parameters", function() {
+  it("Action function is called on deeper objects with the correct parameters", function() {
 	var o = new core.WorldObject();
 	var o2 = new core.WorldObject();			
 	o.actions.push(function(obj,elapsedTime){});
@@ -29,22 +29,29 @@ describe("Core", function() {
 	expect(o.run).toHaveBeenCalledWith(o,100);
   });
 
-	it("world object should have characteristic or not", function() {
+	it("World object is able to detect his own characteristic", function() {
 		var o = new core.WorldObject();
 		expect(o.hasCharacteristic("chara")).toEqual(false);
-		core.log(JSON.stringify(o));
 		o.characteristics["chara"]=0;
-		core.log(JSON.stringify(o));		
 		expect(o.hasCharacteristic("chara")).toEqual(true);
 	});
 
-	it("should add characteristic with properties on world object", function() {
+	it("Characteristic can be added to a world object", function() {
 		var o = new core.WorldObject();
 		var properties={color:"black",size:10};
 		expect(_.contains(_.keys(o.characteristics),"newStuff")).toEqual(false);
 		o.addCharacteristicProperties("newStuff", properties);
 		expect(_.contains(_.keys(o.characteristics),"newStuff")).toEqual(true);
 	});
-	
-	
+
+	it("Characteristic can not be added to a world object that already has that characteristic", function() {
+		var o = new core.WorldObject();
+		var properties={color:"black",size:10};
+		o.addCharacteristicProperties("newStuff", properties);
+		var sizeBeforeSecondAdd = _.size(o.characteristics);
+		o.addCharacteristicProperties("newStuff", properties);
+		var sizeAfterSecoundAdd = _.size(o.characteristics);
+		expect(sizeBeforeSecondAdd).toEqual(sizeAfterSecoundAdd);
+	});	
+		
 });

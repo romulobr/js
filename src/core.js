@@ -8,7 +8,7 @@ core.WorldObject = function(){
 	function self() {		
 		this.lastUpdate = 0;
 		this.actions = [];
-		this.characteristics = [];
+		this.characteristics = {};
 	};
 	//do stuff with prototype here.
 	self.prototype.run = function(obj,elapsedTime) {

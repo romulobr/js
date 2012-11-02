@@ -5,7 +5,7 @@ core.log= function(msg) {
 }
 
 core.WorldObject = function(){
-	function self() {		
+	function self() {
 		this.lastUpdate = 0;
 		this.actions = [];
 		this.characteristics = {};

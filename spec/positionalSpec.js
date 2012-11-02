@@ -11,8 +11,13 @@ describe("Positional", function() {
 		var o = new core.WorldObject();
 		expect(_.contains(_.keys(o.characteristics),"movable")).toEqual(false);
 		expect(_.contains(_.keys(o.characteristics),"positional")).toEqual(false);
-		movable.makeItMoveable(o);
+		movable.makeItMovable(o);
 		expect(_.contains(_.keys(o.characteristics),"movable")).toEqual(true);
 		expect(_.contains(_.keys(o.characteristics),"positional")).toEqual(true);
-	});		
+	});
+	
+	it("Movable should move when object action is called", function() {
+
+	});
+			
 });

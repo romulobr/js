@@ -14,6 +14,5 @@ describe("Positional", function() {
 		movable.makeItMoveable(o);
 		expect(_.contains(_.keys(o.characteristics),"movable")).toEqual(true);
 		expect(_.contains(_.keys(o.characteristics),"positional")).toEqual(true);
-	});
-		
+	});		
 });

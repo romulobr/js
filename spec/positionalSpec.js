@@ -16,8 +16,11 @@ describe("Positional", function() {
 		expect(_.contains(_.keys(o.characteristics),"positional")).toEqual(true);
 	});
 	
-	it("Movable should move when object action is called", function() {
-
+	it("Movable moves when object update is called", function() {
+		var o = new core.WorldObject();
+		spyOn(movable,'move');
+		movable.makeItMovable(o);
+		o.update(200);
+		expect(movable.move).toHaveBeenCalled();
 	});
-			
 });

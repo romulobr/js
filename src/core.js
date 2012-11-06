@@ -22,8 +22,7 @@ core.WorldObject = function(){
 			this.lastUpdate = this.lastUpdate+elapsedTime;
 	};
 
-	self.prototype.update = function(now){
-		var elapsedTime = now - this.lastUpdate;
+	self.prototype.update = function(elapsedTime){
 		this.run(this,elapsedTime);
 	}	
 

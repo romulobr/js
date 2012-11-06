@@ -6,7 +6,7 @@ describe("Core", function() {
     expect(o.lastUpdate).toEqual(0);
 	o.update(300);
     expect(o.lastUpdate).toEqual(300);
-	o.update(400);
+	o.update(100);
     expect(o.lastUpdate).toEqual(400);	
   });
 

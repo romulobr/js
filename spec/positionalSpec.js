@@ -18,9 +18,14 @@ describe("Positional", function() {
 	
 	it("Movable moves when object update is called", function() {
 		var o = new core.WorldObject();
-		spyOn(movable,'move');
+		spyOn(movable,'move').andCallThrough();
 		movable.makeItMovable(o);
 		o.update(200);
 		expect(movable.move).toHaveBeenCalled();
+	});
+	
+	it("Movable direction is being set.",function(){
+		var o = new core.WorldObject();
+		movable.makeItMovable(o);		
 	});
 });

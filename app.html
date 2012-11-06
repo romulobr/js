@@ -10,46 +10,90 @@
 	<body>
 		<canvas id="canvas"></canvas>
 
-		<script>		
+		<script>			
 		var positionals=[];
 		var canvasWidth=window.innerWidth;
-		var canvasHeight=window.innerHeight;		
-		
+		var canvasHeight=window.innerHeight;			
+		for (var i=0;i<100;i++){
+			var o=newRandomPositional();
+			positionals.push(o);
+		}
+
 		function newRandomPositional(){
 			var o = new core.WorldObject();
-			movable.makeItMovable(o);
+			movable.makeItMovable(o);			
 			o.characteristics.positional.x=(Math.random()*10000)%canvasWidth;
 			o.characteristics.positional.y=(Math.random()*10000)%canvasHeight;
-			o.characteristics.movable.speed=(Math.random()*10000);
-			o.characteristics.movable.angle=(Math.random()*10000);			
+			o.characteristics.movable.speed.x=((Math.random())*20)-10;
+			o.characteristics.movable.speed.y=((Math.random())*20)-10;
 			return o;
 		}
-		
-		for (var i=0;i<50;i++){
-			positionals.push(newRandomPositional());
+
+		function updateWorld(elapsedTime){
+			_.each(positionals, function(o){
+				o.update(elapsedTime);
+			});
 		}
-		
-		function renderOnCanvas(){
+
+		function render(){
 			var c=document.getElementById("canvas");
 			c.width=canvasWidth;
 			c.height=canvasHeight;
 			var ctx=c.getContext("2d");
 			ctx.fillStyle="#000000";
 			ctx.fillRect(0,0,canvasWidth,canvasHeight);
-
 			ctx.fillStyle="#FF0000";
-			ctx.strokeStyle = "orange";			
-			core.log(positionals);
-
+			ctx.lineWidth = 1;
+			ctx.strokeStyle = "rgba(0,255,0,0.5)" 
 			_.each(positionals, function(o){
-				var x = o.characteristics.positional.x;
-				var y = o.characteristics.positional.y;
-				ctx.fillRect(x,y,10,10);				
-				ctx.arc(x, y, 3, 0, 360);
-				o.update(30);
+				ctx.fillRect(o.characteristics.positional.x,o.characteristics.positional.y,10,10);
+				ctx.moveTo(o.characteristics.positional.x,o.characteristics.positional.y);
+				ctx.lineTo(o.characteristics.positional.x+o.characteristics.movable.speed.x*5,
+                           o.characteristics.positional.y+o.characteristics.movable.speed.y*5);
+                ctx.stroke();
 			});			
 		}
-		renderOnCanvas();
+		
+		window.requestAnimFrame = (function(callback) {
+		        return window.requestAnimationFrame || 
+		        window.webkitRequestAnimationFrame || 
+		        window.mozRequestAnimationFrame || 
+		        window.oRequestAnimationFrame || 
+		        window.msRequestAnimationFrame ||
+		        function(callback) {
+		          window.setTimeout(callback, 1000 / 60);
+		        };
+		      })();
+
+			  var lastUpdate=0;
+			
+		      function animate() {
+		        var canvas = document.getElementById("canvas");
+		        var context = canvas.getContext("2d");
+		        // update stage
+					if(lastUpdate==0){
+						lastUpdate=new Date();
+					}else{
+						var thisUpdate = new Date();
+						core.log("This Update"+thisUpdate);
+						core.log("Last Update"+lastUpdate);						
+						updateWorld( thisUpdate - lastUpdate);
+						lastUpdate = thisUpdate;
+					}
+		        // clear stage
+		        //context.clearRect(0, 0, canvas.width, canvas.height);
+		        // render stage
+				render();
+		        // request new frame
+		        requestAnimFrame(function() {
+		          animate();
+		        });
+		      }
+
+		      window.onload = function() {
+		        animate();
+		      };
+		
 		</script>
 	</body>
 </html>

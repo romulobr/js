@@ -11,19 +11,28 @@
 		<canvas id="canvas"></canvas>
 
 		<script>			
-		var positionals=[];
-		var canvasWidth=window.innerWidth;
-		var canvasHeight=window.innerHeight;			
-		for (var i=0;i<100;i++){
+		var positionals = [];
+		var canvasWidth = window.innerWidth;
+		var canvasHeight = window.innerHeight;
+		var canvas = document.getElementById("canvas");
+
+		canvas.addEventListener('click', function(e) {
+			_.each(positionals, function(o){
+				o.characteristics.movable.toDirection(e.layerX,e.layerY)
+			});			
+		}, false);
+
+		for (var i=0;i<500;i++){
 			var o=newRandomPositional();
 			positionals.push(o);
 		}
 
 		function newRandomPositional(){
 			var o = new core.WorldObject();
-			movable.makeItMovable(o);			
-			o.characteristics.positional.x=(Math.random()*10000)%canvasWidth;
-			o.characteristics.positional.y=(Math.random()*10000)%canvasHeight;
+			movable.makeItMovable(o);
+			o.color='#'+(0x1000000+(Math.random())*0xffffff).toString(16).substr(1,6);			
+			o.characteristics.movable.position.x=(Math.random()*10000)%canvasWidth;
+			o.characteristics.movable.position.y=(Math.random()*10000)%canvasHeight;
 			o.characteristics.movable.speed.x=((Math.random())*20)-10;
 			o.characteristics.movable.speed.y=((Math.random())*20)-10;
 			return o;
@@ -31,7 +40,7 @@
 
 		function updateWorld(elapsedTime){
 			_.each(positionals, function(o){
-				o.update(elapsedTime);
+				o.update(elapsedTime*10);
 			});
 		}
 
@@ -40,18 +49,27 @@
 			c.width=canvasWidth;
 			c.height=canvasHeight;
 			var ctx=c.getContext("2d");
-			ctx.fillStyle="#000000";
-			ctx.fillRect(0,0,canvasWidth,canvasHeight);
-			ctx.fillStyle="#FF0000";
 			ctx.lineWidth = 1;
-			ctx.strokeStyle = "rgba(0,255,0,0.5)" 
-			_.each(positionals, function(o){
-				ctx.fillRect(o.characteristics.positional.x,o.characteristics.positional.y,10,10);
-				ctx.moveTo(o.characteristics.positional.x,o.characteristics.positional.y);
-				ctx.lineTo(o.characteristics.positional.x+o.characteristics.movable.speed.x*5,
-                           o.characteristics.positional.y+o.characteristics.movable.speed.y*5);
+			ctx.fillStyle="#000000";
+//			ctx.fillRect(0,0,canvasWidth,canvasHeight);
+		// add linear gradient
+		      var grd = ctx.createLinearGradient(0, 0, canvasWidth, canvasHeight);
+		      // light blue
+		      grd.addColorStop(0, '#8ED6FF');   
+		      // dark blue
+		      grd.addColorStop(1, '#004CB3');
+		      ctx.fillStyle = grd;
+		      ctx.fillRect(0,0,canvasWidth,canvasHeight);
+			_.each(positionals, function(o){			
+				ctx.beginPath();
+				ctx.strokeStyle = o.color;
+				ctx.fillStyle= o.color;				
+				ctx.moveTo(o.characteristics.movable.position.x,o.characteristics.movable.position.y);
+				ctx.lineTo(o.characteristics.movable.position.x+o.characteristics.movable.speed.x*5,
+                           o.characteristics.movable.position.y+o.characteristics.movable.speed.y*5);
                 ctx.stroke();
-			});			
+				ctx.fillRect(o.characteristics.movable.position.x-5,o.characteristics.movable.position.y-5,10,10);
+			});
 		}
 		
 		window.requestAnimFrame = (function(callback) {
@@ -74,9 +92,7 @@
 					if(lastUpdate==0){
 						lastUpdate=new Date();
 					}else{
-						var thisUpdate = new Date();
-						core.log("This Update"+thisUpdate);
-						core.log("Last Update"+lastUpdate);						
+						var thisUpdate = new Date();						
 						updateWorld( thisUpdate - lastUpdate);
 						lastUpdate = thisUpdate;
 					}

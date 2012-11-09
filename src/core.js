@@ -4,6 +4,13 @@ core.log= function(msg) {
 	console.log(msg);
 }
 
+core.newObject = function (proto){
+	function F() {};
+    F.prototype = proto;
+    var f = new F();
+    return f;
+}
+
 core.WorldObject = function(){
 	function self() {
 		this.lastUpdate = 0;
@@ -32,7 +39,7 @@ core.WorldObject = function(){
 
 	self.prototype.addCharacteristicProperties = function(characteristic, properties){
 		if(!this.hasCharacteristic(characteristic) ){
-			this.characteristics[characteristic]=_.clone(properties);
+			this.characteristics[characteristic]=core.newObject(properties);
 		}
 	}
 	
